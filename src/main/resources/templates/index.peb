@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Elepy</title>
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/prism.css">
+</head>
+<body>
+
+
+<div id="app">
+{% for section in sections %}
+
+
+    <div id="{{ section.cssId }}"
+         class="documentation-section uk-container uk-container-small {{ section.language.css}}">
+
+        <div class="uk-section uk-section-muted">
+            <div class="uk-padding" md>{{ section.content | raw}}</div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+<script src="/js/prism.js"></script>
+<script src="https://unpkg.com/marked@0.3.6"></script>
+<script src="/js/main.js"></script>
+
+</body>
+</html>
