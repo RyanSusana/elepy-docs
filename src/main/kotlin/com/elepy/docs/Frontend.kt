@@ -21,22 +21,17 @@ class Frontend : ElepyModule {
         val sectionCrud = MongoDao<Section>(elepy.getSingleton(DB::class.java), "sections", Section::class.java)
 
         http.get("/") { req, res ->
-
             val context: MutableMap<String, Any> = mutableMapOf()
             context["sections"] = sectionCrud.all
-
             compile("templates/index.peb", context)
         }
-
     }
 
     private fun compile(templ: String, context: Map<String, Any>): String {
-
         val compiledTemplate = engine.getTemplate(templ)
 
         val writer = StringWriter()
         compiledTemplate.evaluate(writer, context)
-
         return writer.toString()
     }
 }

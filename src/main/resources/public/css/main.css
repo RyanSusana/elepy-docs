@@ -1,4 +1,12 @@
 @charset "UTF-8";
+.main-navbar {
+  background: #3694f2 !important;
+}
+
+.banner {
+  min-height: 720px;
+}
+
 /* ========================================================================
    Component: Base
  ========================================================================== */
@@ -50,7 +58,7 @@ a:hover {
  */
 a,
 .uk-link {
-  color: #DA7D02;
+  color: #1e87f0;
   text-decoration: none;
   cursor: pointer;
 }
@@ -2266,7 +2274,7 @@ select.uk-form-width-xsmall {
   line-height: 1.5;
   background: none;
   /* 2 */
-  color: #DA7D02;
+  color: #1e87f0;
 }
 
 /* Hover + Focus */
@@ -3021,7 +3029,7 @@ select.uk-form-width-xsmall {
 .uk-card {
   position: relative;
   box-sizing: border-box;
-  color: #000;
+  transition: box-shadow 0.1s ease-in-out;
 }
 
 /* Sections

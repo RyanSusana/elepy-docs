@@ -1,11 +1,13 @@
-
-
-
-$global-link-color: #DA7D02;
-
 @import "uikit/variables-theme";
 @import "uikit/mixins-theme";
 
-@mixin hook-card() { color: #000; }
+.main-navbar {
+  background: lighten($global-primary-background, 5%) !important;
+}
+
+.banner {
+  min-height: 720px;
+
+}
 
 @import "uikit/uikit-theme";
