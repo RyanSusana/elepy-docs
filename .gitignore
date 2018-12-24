@@ -24,3 +24,6 @@ hs_err_pid*
 
 # Generated css
 *.css.map
+
+.idea/**
+*/.idea/*
