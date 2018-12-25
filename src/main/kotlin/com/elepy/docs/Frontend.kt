@@ -11,7 +11,6 @@ import java.io.StringWriter
 
 class Frontend : ElepyModule {
 
-    val engine: PebbleEngine = PebbleEngine.Builder().build()
 
     override fun setup(http: Service, elepy: Elepy) {
         http.staticFiles.location("public")
@@ -24,12 +23,15 @@ class Frontend : ElepyModule {
             compile("templates/index.peb", mapOf("sections" to sectionCrud.all))
         }
     }
+    companion object {
+        val engine: PebbleEngine = PebbleEngine.Builder().build()
 
-    private fun compile(templ: String, context: Map<String, Any>): String {
-        val compiledTemplate = engine.getTemplate(templ)
+        fun  compile(templ: String, context: Map<String, Any>): String {
+            val compiledTemplate = engine.getTemplate(templ)
 
-        val writer = StringWriter()
-        compiledTemplate.evaluate(writer, context)
-        return writer.toString()
+            val writer = StringWriter()
+            compiledTemplate.evaluate(writer, context)
+            return writer.toString()
+        }
     }
 }

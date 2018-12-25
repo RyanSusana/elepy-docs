@@ -5,10 +5,13 @@ import com.elepy.admin.ElepyAdminPanel
 import com.elepy.annotations.*
 import com.elepy.annotations.Number
 import com.elepy.concepts.ObjectEvaluator
+import com.elepy.docs.settings.Setting
 import com.elepy.exceptions.ErrorMessageBuilder
 import com.elepy.models.TextType
+import com.elepy.plugins.gallery.ElepyGallery
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.github.fakemongo.Fongo
 import com.mongodb.DB
 import com.mongodb.MongoClient
 import com.mongodb.ServerAddress
@@ -26,16 +29,16 @@ fun main(args: Array<String>) {
 
     val mongoClient = MongoClient(ServerAddress(databaseServer, databasePort.toInt()))
 
-    val elepyDB = mongoClient.getDB("elepy-documentation")
+    val elepyDB = Fongo("test").getDB("test") //mongoClient.getDB("elepy-documentation")
 
     val elepy = Elepy()
             .onPort(4242)
             .addExtension(Frontend())
-            .addExtension(ElepyAdminPanel())
+            .addExtension(ElepyAdminPanel().addPlugin(ElepyGallery()))
             .attachSingleton(DB::class.java, elepyDB)
 
 
-    elepy.addModel(Section::class.java)
+    elepy.addModel(Section::class.java).addModel(Setting::class.java)
     elepy.start()
 }
 
