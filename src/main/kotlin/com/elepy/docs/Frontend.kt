@@ -21,9 +21,7 @@ class Frontend : ElepyModule {
         val sectionCrud = MongoDao<Section>(elepy.getSingleton(DB::class.java), "sections", Section::class.java)
 
         http.get("/") { req, res ->
-            val context: MutableMap<String, Any> = mutableMapOf()
-            context["sections"] = sectionCrud.all
-            compile("templates/index.peb", context)
+            compile("templates/index.peb", mapOf("sections" to sectionCrud.all))
         }
     }
 
