@@ -23,6 +23,12 @@ services:
       - mongo
     depends_on:
       - mongo
+  elepy-javadocs-core:
+    image: abiosoft/caddy:php
+    volumes:
+      - javadocs-core:/srv
+    networks:
+      - tls
 networks:
   tls:
     external: true
