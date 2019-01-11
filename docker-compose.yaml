@@ -26,7 +26,7 @@ services:
   elepy-javadocs-core:
     image: abiosoft/caddy:php
     volumes:
-      - javadocs-core:/srv
+      - ./javadocs-core:/srv
     networks:
       - tls
 networks:
