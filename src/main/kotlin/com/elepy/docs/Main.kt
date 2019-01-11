@@ -5,7 +5,6 @@ import com.elepy.admin.ElepyAdminPanel
 import com.elepy.annotations.*
 import com.elepy.annotations.Number
 import com.elepy.concepts.ObjectEvaluator
-import com.elepy.docs.settings.Setting
 import com.elepy.exceptions.ErrorMessageBuilder
 import com.elepy.models.TextType
 import com.elepy.plugins.gallery.ElepyGallery
@@ -29,7 +28,7 @@ fun main(args: Array<String>) {
 
     val mongoClient = MongoClient(ServerAddress(databaseServer, databasePort.toInt()))
 
-    val elepyDB = Fongo("test").getDB("test") //mongoClient.getDB("elepy-documentation")
+    val elepyDB = if (System.getenv("testing") == null) mongoClient.getDB("elepy-documentation") else Fongo("test").getDB("test")
 
     val elepy = Elepy()
             .onPort(4242)
@@ -38,7 +37,7 @@ fun main(args: Array<String>) {
             .attachSingleton(DB::class.java, elepyDB)
 
 
-    elepy.addModel(Section::class.java).addModel(Setting::class.java)
+    elepy.addModel(Section::class.java)
     elepy.start()
 }
 
@@ -51,7 +50,8 @@ data class Section @JsonCreator constructor(
         @JsonProperty("content") @PrettyName("Section Content") @Importance(-1) @Text(TextType.MARKDOWN) val content: String?,
         @JsonProperty("cssId") @PrettyName("CSS ID") @Required @Uneditable @Unique @Text(TextType.TEXTFIELD) val cssId: String,
         @JsonProperty("order") @PrettyName("Order Nr.") @Number(minimum = 0f, maximum = 200f) val order: Int?,
-        @JsonProperty("language") @PrettyName("Programming Language") val language: SectionType
+        @JsonProperty("language") @PrettyName("Programming Language") val language: SectionType,
+        @com.elepy.annotations.Boolean(trueValue = "Show link in Navigation Bar", falseValue = "Don't show link in Navigation Bar") @JsonProperty("showLink") @PrettyName("Show Link") val showLink: Boolean
 )
 
 enum class SectionType(val css: String) {
