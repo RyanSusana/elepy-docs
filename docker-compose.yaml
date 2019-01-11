@@ -25,6 +25,7 @@ services:
       - mongo
   elepy-javadocs-core:
     image: abiosoft/caddy:php
+    container_name: "elepy-javadocs-core"
     volumes:
       - ./javadocs-core:/srv
     networks:
