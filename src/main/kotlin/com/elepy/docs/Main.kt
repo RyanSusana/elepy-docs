@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
 
     val mongoClient = MongoClient(ServerAddress(databaseServer, databasePort.toInt()))
 
-    val elepyDB = if (System.getenv("testing") == null) mongoClient.getDB("elepy-documentation") else Fongo("test").getDB("test")
+    val elepyDB = if (System.getenv("testing") == null) mongoClient.getDB("elepy-docs") else Fongo("test").getDB("test")
 
     val elepy = Elepy()
             .onPort(4242)
@@ -106,16 +106,16 @@ fun updateGithub(name: String, content: String) {
 
     val gitHub: GitHub = GitHub.connectUsingPassword(System.getenv("GITHUB_USERNAME"), System.getenv("GITHUB_PASSWORD"))
 
-    val directoryContent = gitHub.elepy().getDirectoryContent("documentation")
+    val directoryContent = gitHub.elepy().getDirectoryContent("docs")
 
     if (directoryContent.stream().noneMatch { ghcontent -> ghcontent.name == name }) {
         gitHub.elepy().createContent()
                 .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
-                .content(content).path("documentation/" + name)
+                .content(content).path("docs/" + name)
                 .commit().commit
     } else {
         gitHub.elepy()
-                .getDirectoryContent("documentation")
+                .getDirectoryContent("docs")
                 .stream()
                 .filter { content ->
                     name == content.name
@@ -125,7 +125,7 @@ fun updateGithub(name: String, content: String) {
                     gitHub.elepy()
                             .createContent()
                             .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
-                            .content(content).path("documentation/" + name)
+                            .content(content).path("docs/" + name)
                             .sha(foundContent.sha)
                             .commit().commit
                 }
