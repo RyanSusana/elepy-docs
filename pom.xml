@@ -16,17 +16,27 @@
         <dependency>
             <groupId>com.elepy</groupId>
             <artifactId>elepy-core</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.2</version>
         </dependency>
         <dependency>
             <groupId>com.elepy</groupId>
             <artifactId>elepy-admin</artifactId>
-            <version>1.7.1</version>
+            <version>1.7.2</version>
         </dependency>
         <dependency>
             <groupId>com.elepy</groupId>
             <artifactId>elepy-gallery</artifactId>
-            <version>1.6.2</version>
+            <version>1.7.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.95</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
         </dependency>
         <dependency>
             <groupId>com.github.fakemongo</groupId>

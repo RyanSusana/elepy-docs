@@ -24,7 +24,7 @@ class Frontend : ElepyModule {
         }
     }
     companion object {
-        val engine: PebbleEngine = PebbleEngine.Builder().build()
+        private val engine: PebbleEngine = PebbleEngine.Builder().build()
 
         fun  compile(templ: String, context: Map<String, Any>): String {
             val compiledTemplate = engine.getTemplate(templ)
