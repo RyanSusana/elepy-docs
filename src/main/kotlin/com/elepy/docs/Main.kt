@@ -133,5 +133,7 @@ fun updateGithub(name: String, content: String) {
 }
 
 fun GitHub.elepy(): GHRepository {
+
+    // STILL DECIDING IF I WANT IT TO AUTO-UPDATE ELEPY REPO
     return this.getRepository(if (System.getenv("testing") == null) "RyanSusana/elepy-docs" else "RyanSusana/elepy-docs")
 }
