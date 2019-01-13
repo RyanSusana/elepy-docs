@@ -28,9 +28,6 @@ fun main(args: Array<String>) {
 
     Logger.getRootLogger().level = Level.ERROR
     org.apache.log4j.BasicConfigurator.configure()
-
-
-    updateGithub("RYAN.md", "ryan")
     val databaseServer: String = System.getenv("DATABASE_SERVER") ?: "localhost"
     val databasePort: String = System.getenv("DATABASE_PORT") ?: "27017"
 
@@ -62,11 +59,16 @@ data class Section @JsonCreator constructor(
         @JsonProperty("cssId") @PrettyName("CSS ID") @Required @Uneditable @Unique @Text(TextType.TEXTFIELD) val cssId: String,
         @JsonProperty("order") @PrettyName("Order Nr.") @Number(minimum = 0f, maximum = 200f) val order: Int?,
         @JsonProperty("language") @PrettyName("Programming Language") val language: SectionType,
+        @JsonProperty("visibility") @PrettyName("Section Visibility") val visibility: SectionVisibility,
         @com.elepy.annotations.Boolean(trueValue = "Show link in Navigation Bar", falseValue = "Don't show link in Navigation Bar") @JsonProperty("showLink") @PrettyName("Show Link") val showLink: Boolean
 )
 
 enum class SectionType(val css: String) {
     JAVA("language-java"), KOTLIN("language-kotlin"), XML("language-xml");
+}
+
+enum class SectionVisibility(val showOnSite: Boolean, val showOnGitHub: Boolean) {
+    SHOW_EVERYWHERE(true, true), SHOW_ON_GITHUB(false, true), SHOW_ON_SITE(true, false)
 }
 
 class SectionCreate : SimpleCreate<Section>() {
@@ -76,7 +78,7 @@ class SectionCreate : SimpleCreate<Section>() {
 
     override fun afterCreate(createdObject: Section, crud: Crud<Section>?, elepy: ElepyContext?) {
         thread {
-            updateGithub(createdObject.cssId + ".md", createdObject.content)
+            updateGithub(createdObject.cssId + ".md", createdObject.content, createdObject.visibility)
         }
     }
 }
@@ -86,10 +88,12 @@ class SectionUpdate : SimpleUpdate<Section>() {
         //Do nothing
     }
 
-    override fun afterUpdate(beforeVersion: Section?, updatedVersion: Section, crud: Crud<Section>?, elepy: ElepyContext?) {
+    override fun afterUpdate(beforeVersion: Section, updatedVersion: Section, crud: Crud<Section>?, elepy: ElepyContext?) {
+
         thread {
-            updateGithub(updatedVersion.cssId + ".md", updatedVersion.content)
+            updateGithub(updatedVersion.cssId + ".md", updatedVersion.content, updatedVersion.visibility)
         }
+
     }
 }
 
@@ -102,33 +106,39 @@ class SectionEvaluator : ObjectEvaluator<Section> {
 }
 
 
-fun updateGithub(name: String, content: String) {
+fun updateGithub(name: String, content: String, visibility: SectionVisibility) {
 
     val gitHub: GitHub = GitHub.connectUsingPassword(System.getenv("GITHUB_USERNAME"), System.getenv("GITHUB_PASSWORD"))
 
     val directoryContent = gitHub.elepy().getDirectoryContent("docs")
 
-    if (directoryContent.stream().noneMatch { ghcontent -> ghcontent.name == name }) {
-        gitHub.elepy().createContent()
-                .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
-                .content(content).path("docs/" + name)
-                .commit().commit
+    if (visibility.showOnGitHub) {
+        if (directoryContent.stream().noneMatch { ghcontent -> ghcontent.name == name }) {
+            gitHub.elepy().createContent()
+                    .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
+                    .content(content).path("docs/" + name)
+                    .commit().commit
+        } else {
+            gitHub.elepy()
+                    .getDirectoryContent("docs")
+                    .stream()
+                    .filter { content ->
+                        name == content.name
+                    }
+                    .findAny()
+                    .ifPresent { foundContent ->
+                        gitHub.elepy()
+                                .createContent()
+                                .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
+                                .content(content).path("docs/" + name)
+                                .sha(foundContent.sha)
+                                .commit().commit
+                    }
+        }
     } else {
-        gitHub.elepy()
-                .getDirectoryContent("docs")
-                .stream()
-                .filter { content ->
-                    name == content.name
-                }
-                .findAny()
-                .ifPresent { foundContent ->
-                    gitHub.elepy()
-                            .createContent()
-                            .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
-                            .content(content).path("docs/" + name)
-                            .sha(foundContent.sha)
-                            .commit().commit
-                }
+        if (directoryContent.stream().anyMatch { ghcontent -> ghcontent.name == name }) {
+            gitHub.elepy().getFileContent("docs/" + name).delete("REMOVED DOCUMENTATION: " + name)
+        }
     }
 }
 

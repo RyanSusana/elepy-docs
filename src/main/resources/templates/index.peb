@@ -62,7 +62,7 @@
                 <ul class="uk-navbar-nav">
 
                 {% for section in sections%}
-                {% if section.showLink %}
+                {% if section.showLink and section.visibility.showOnSite %}
                     <li><a href="#{{ section.cssId }}" uk-scroll="offset: 80;">{{ section.title }}</a></li>
                 {% endif %}
                 {% endfor %}
@@ -75,6 +75,7 @@
 </div>
 <div id="main">
 {% for section in sections %}
+{% if section.visibility.showOnSite %}
     <div class="uk-container uk-container-xsmall uk-margin-small-top uk-margin-small-bottom">
         <div id="{{ section.cssId }}" class="uk-section {{ section.cssClasses }} uk-padding">
             <div class="uk-container {{ section.language.css}}">
@@ -84,6 +85,7 @@
             </div>
         </div>
     </div>
+{% endif %}
 {% endfor %}
 </div>
 
