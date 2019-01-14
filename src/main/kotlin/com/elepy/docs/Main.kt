@@ -7,6 +7,7 @@ import com.elepy.annotations.Number
 import com.elepy.concepts.ObjectEvaluator
 import com.elepy.dao.Crud
 import com.elepy.di.ElepyContext
+import com.elepy.exceptions.ElepyException
 import com.elepy.exceptions.ErrorMessageBuilder
 import com.elepy.models.TextType
 import com.elepy.plugins.gallery.ElepyGallery
@@ -14,6 +15,7 @@ import com.elepy.routes.SimpleCreate
 import com.elepy.routes.SimpleUpdate
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.databind.JsonMappingException
 import com.github.fakemongo.Fongo
 import com.mongodb.DB
 import com.mongodb.MongoClient
@@ -22,6 +24,8 @@ import org.apache.log4j.Level
 import org.apache.log4j.Logger
 import org.kohsuke.github.GHRepository
 import org.kohsuke.github.GitHub
+import spark.Request
+import spark.Response
 import kotlin.concurrent.thread
 
 fun main(args: Array<String>) {
@@ -63,6 +67,7 @@ data class Section @JsonCreator constructor(
         @com.elepy.annotations.Boolean(trueValue = "Show link in Navigation Bar", falseValue = "Don't show link in Navigation Bar") @JsonProperty("showLink") @PrettyName("Show Link") val showLink: Boolean
 )
 
+
 enum class SectionType(val css: String) {
     JAVA("language-java"), KOTLIN("language-kotlin"), XML("language-xml");
 }
@@ -72,13 +77,39 @@ enum class SectionVisibility(val showOnSite: Boolean, val showOnGitHub: Boolean)
 }
 
 class SectionCreate : SimpleCreate<Section>() {
+
+    @Throws(Exception::class)
+    override fun handleCreate(request: Request, response: Response, dao: Crud<Section>, elepy: ElepyContext, objectEvaluators: List<ObjectEvaluator<Section>>, clazz: Class<Section>) {
+
+        try {
+
+            val body = request.body()
+
+            val objectMapper = elepy.objectMapper
+            val item = objectMapper.readValue<Section>(body, dao.getType())
+
+            beforeCreate(item, dao, elepy)
+
+            super.handleCreate(request, response, dao, elepy, objectEvaluators, clazz)
+
+            afterCreate(item, dao, elepy)
+            response.status(200)
+            response.body("OK")
+
+        } catch (e: JsonMappingException) {
+            e.printStackTrace()
+            throw ElepyException("MultipleCreate not supported with SimpleCreate")
+        }
+
+    }
     override fun beforeCreate(objectForCreation: Section?, crud: Crud<Section>?, elepy: ElepyContext?) {
         //Do nothing
     }
 
     override fun afterCreate(createdObject: Section, crud: Crud<Section>?, elepy: ElepyContext?) {
         thread {
-            updateGithub(createdObject.cssId + ".md", createdObject.content, createdObject.visibility)
+            println(createdObject.cssId)
+            updateGithub("${createdObject.cssId}.md", createdObject.content, createdObject.visibility)
         }
     }
 }
@@ -91,7 +122,7 @@ class SectionUpdate : SimpleUpdate<Section>() {
     override fun afterUpdate(beforeVersion: Section, updatedVersion: Section, crud: Crud<Section>?, elepy: ElepyContext?) {
 
         thread {
-            updateGithub(updatedVersion.cssId + ".md", updatedVersion.content, updatedVersion.visibility)
+            updateGithub("${updatedVersion.cssId}.md", updatedVersion.content, updatedVersion.visibility)
         }
 
     }
@@ -114,10 +145,18 @@ fun updateGithub(name: String, content: String, visibility: SectionVisibility) {
 
     if (visibility.showOnGitHub) {
         if (directoryContent.stream().noneMatch { ghcontent -> ghcontent.name == name }) {
-            gitHub.elepy().createContent()
-                    .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
-                    .content(content).path("docs/" + name)
-                    .commit().commit
+            try{
+                gitHub.elepy()
+                        .createContent()
+                        .message("AUTOMATIC DOCUMENTATION UPDATE: $name")
+                        .content(content)
+                        .path("docs/$name")
+                        .commit()
+            }catch (e:Exception){
+                //Bug with the Library. It does an update instead of a create.
+                e.printStackTrace()
+            }
+
         } else {
             gitHub.elepy()
                     .getDirectoryContent("docs")
@@ -129,19 +168,19 @@ fun updateGithub(name: String, content: String, visibility: SectionVisibility) {
                     .ifPresent { foundContent ->
                         gitHub.elepy()
                                 .createContent()
-                                .message("AUTOMATIC DOCUMENTATION UPDATE: " + name)
-                                .content(content).path("docs/" + name)
+                                .message("AUTOMATIC DOCUMENTATION UPDATE: $name")
+                                .content(content).path("docs/$name")
                                 .sha(foundContent.sha)
-                                .commit().commit
+                                .commit()
                     }
         }
     } else {
         if (directoryContent.stream().anyMatch { ghcontent -> ghcontent.name == name }) {
-            gitHub.elepy().getFileContent("docs/" + name).delete("REMOVED DOCUMENTATION: " + name)
+            gitHub.elepy().getFileContent("docs/$name").delete("REMOVED DOCUMENTATION: $name")
         }
     }
 }
 
 fun GitHub.elepy(): GHRepository {
-    return this.getRepository(if (System.getenv("testing") == null) "RyanSusana/elepy" else "RyanSusana/elepy-docs")
+    return this.getRepository(if (System.getenv("testing") == null) "RyanSusana/elepy" else "RyanSusana/elepy")
 }
