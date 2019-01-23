@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Elepy</title>
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/prism.css">
+</head>
+<body>
+{% include 'templates/includes/navbar.peb' %}
+<div id="main">
+    <div class="uk-container uk-container-xsmall uk-margin-small-top uk-margin-small-bottom">
+        <div id="guide-content" class="uk-section uk-padding">
+            <div class="uk-container">
+
+                <h3 class="uk-heading-bullet">{{ guide.title }}</h3>
+                <div md>{{ guide.content | raw}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'templates/includes/footer.peb' %}
+{% include 'templates/includes/scripts.peb' %}
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Elepy</title>
+    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/prism.css">
+</head>
+<body>
+{% include 'templates/includes/navbar.peb' %}
+<div id="main">
+    <div class="uk-container uk-container-xsmall uk-margin-small-top uk-margin-small-bottom">
+
+    {% for guide in guides %}
+        <div class="uk-card uk-card-default uk-grid-collapse uk-child-width-1-2@s uk-margin" uk-grid>
+            <div class="{%if loop.index % 2 == 0%}uk-card-media-left {%else%} uk-flex-last@s uk-card-media-right{%endif%}">
+                <img class = "caption-image" src="{%if guide.image is empty%}/images/logo-light.jpg{%else%}{{ guide.image }}{%endif%}">
+            </div>
+            <div>
+                <div class="uk-card-body">
+                    <h3 class="uk-card-title">{{ guide.title }}</h3>
+                    <p>{{ guide.previewContent }}</p>
+                    <a href="/guides/{{ guide.id }}">Read More...</a>
+                </div>
+            </div>
+        </div>
+    {%else%}
+        <div class="uk-card uk-card-default uk-card-body uk-width-1-1">
+            <h3 class="uk-card-title">No guides found</h3>
+            <p>Stay tuned!</p>
+        </div>
+    {% endfor %}
+    </div>
+</div>
+
+
+{% include 'templates/includes/footer.peb' %}
+{% include 'templates/includes/scripts.peb' %}
+
+</body>
+</html>

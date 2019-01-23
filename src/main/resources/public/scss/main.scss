@@ -10,4 +10,12 @@
 
 }
 
+.caption-image{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#main{
+  min-height: 80vh;
+}
 @import "uikit/uikit-theme";
