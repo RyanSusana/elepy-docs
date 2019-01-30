@@ -9,21 +9,27 @@
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/prism.css">
+    <meta property='og:image'
+          content='{%if guide.image is empty%}/images/logo-light.jpg{%else%}{{ guide.image }}{%endif%}'/>
+    <meta property='og:title' content='{{ guide.title }}'/>
+    <meta property='og:description' content='{{ guide.previewContent}}'/>
 </head>
 <body>
 {% include 'templates/includes/navbar.peb' %}
 <div id="main">
     <div class="uk-container uk-container-xsmall uk-margin-small-top uk-margin-small-bottom">
+        <div class="uk-height-small uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-light"
+             data-src="{%if guide.image is empty%}/images/logo-light.jpg{%else%}{{ guide.image }}{%endif%}" uk-img>
+
+        </div>
         <div id="guide-content" class="uk-section uk-padding">
             <div class="uk-container">
-
-                <h3 class="uk-heading-bullet">{{ guide.title }}</h3>
+                <h1>{{ guide.title }}</h1>
                 <div md>{{ guide.content | raw}}</div>
             </div>
         </div>
     </div>
 </div>
-
 
 {% include 'templates/includes/footer.peb' %}
 {% include 'templates/includes/scripts.peb' %}

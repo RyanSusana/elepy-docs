@@ -9,8 +9,6 @@ import com.mongodb.MongoClient
 import com.mongodb.ServerAddress
 import org.apache.log4j.Level
 import org.apache.log4j.Logger
-import org.kohsuke.github.GHRepository
-import org.kohsuke.github.GitHub
 
 fun main(args: Array<String>) {
 
@@ -28,58 +26,17 @@ fun main(args: Array<String>) {
             .onPort(4242)
             .addExtension(ElepyAdminPanel().addPlugin(ElepyGallery()))
             .attachSingleton(DB::class.java, elepyDB)
+            .requireDependency(TemplateCompiler::class.java)
+            .addModels(Section::class.java, Guide::class.java, News::class.java)
 
+
+    //SparkJava stuff
     elepy.http().staticFiles.location("/public")
 
-    elepy.addModels(Section::class.java, Guide::class.java, News::class.java)
     elepy.start()
+
+
+
 }
 
-fun updateGithub(name: String, content: String, visibility: SectionVisibility) {
-
-    val gitHub: GitHub = GitHub.connectUsingPassword(System.getenv("GITHUB_USERNAME"), System.getenv("GITHUB_PASSWORD"))
-
-    val directoryContent = gitHub.elepy().getDirectoryContent("docs")
-
-    if (visibility.showOnGitHub) {
-        if (directoryContent.stream().noneMatch { ghcontent -> ghcontent.name == name }) {
-            try {
-                gitHub.elepy()
-                        .createContent()
-                        .message("AUTOMATIC DOCUMENTATION UPDATE: $name")
-                        .content(content)
-                        .path("docs/$name")
-                        .commit()
-            } catch (e: Exception) {
-                //Bug with the Library. It does an update instead of a create.
-                e.printStackTrace()
-            }
-
-        } else {
-            gitHub.elepy()
-                    .getDirectoryContent("docs")
-                    .stream()
-                    .filter { content ->
-                        name == content.name
-                    }
-                    .findAny()
-                    .ifPresent { foundContent ->
-                        gitHub.elepy()
-                                .createContent()
-                                .message("AUTOMATIC DOCUMENTATION UPDATE: $name")
-                                .content(content).path("docs/$name")
-                                .sha(foundContent.sha)
-                                .commit()
-                    }
-        }
-    } else {
-        if (directoryContent.stream().anyMatch { ghcontent -> ghcontent.name == name }) {
-            gitHub.elepy().getFileContent("docs/$name").delete("REMOVED DOCUMENTATION: $name")
-        }
-    }
-}
-
-fun GitHub.elepy(): GHRepository {
-    return this.getRepository(if (System.getenv("testing") == null) "RyanSusana/elepy" else "RyanSusana/elepy-docs")
-}
 

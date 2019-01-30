@@ -54,8 +54,9 @@ class EasyIdentityProvider : SlugIdentityProvider<Any>(0, 70, "title", "name")
 data class Guide @JsonCreator constructor(
         @JsonProperty("id") @PrettyName("Section ID") @Identifier val id: String?,
         @JsonProperty("title") @PrettyName("Title") val title: String?,
-        @JsonProperty("caption") @PrettyName("Caption Image") @Text(TextType.IMAGE_LINK) val image: String?,
-        @JsonProperty("content") @PrettyName("Section Content") @Required @Importance(-1) @Text(TextType.MARKDOWN) val content: String,
+        @JsonProperty("caption") @PrettyName("Caption Image") @Text(TextType.IMAGE_LINK)  @Importance(-2) val image: String?,
+        @JsonProperty("previewContent") @PrettyName("Guide Introduction") @Required @Importance(0) @Text(TextType.TEXTAREA, maximumLength = 300) val previewContent: String,
+        @JsonProperty("content") @PrettyName("Guide Content") @Required @Importance(-3) @Text(TextType.MARKDOWN) val content: String,
         @JsonProperty("order") @PrettyName("Order Nr.") @Number(minimum = 0f, maximum = 200f) val order: Int?,
         @com.elepy.annotations.Boolean(trueValue = "Is live on site", falseValue = "Is not live on site") @JsonProperty("showOnSite") @PrettyName("Live") val showOnSite: Boolean
 )

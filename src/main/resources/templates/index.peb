@@ -9,6 +9,10 @@
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/prism.css">
+    <meta property='og:image' content='https://elepy.com/images/logo-light.jpg'/>
+    <meta property='og:title' content='Elepy'/>
+    <meta property='og:description'
+          content='Elepy is a Rest API Generation Framework & Headless CMS for Java/Kotlin developed by Ryan Susana. The framework comes bundled with an admin control panel that lets you easily control your content.'/>
 </head>
 <body>
 
@@ -25,7 +29,6 @@
                 <a href="https://ryansusana.com">Ryan Susana</a>. The framework comes bundled with an admin control
                 panel that
                 lets you easily control your content. </p>
-            <a uk-scroll="offset: -720">Read more...</a>
 
             <div>
 <pre><code>public static void main(String[] args) {
@@ -33,7 +36,7 @@
 
     new Elepy()
         .attachSingleton(DB.class, database)
-        .ipAddress("localhost")
+        .withIPAddress("localhost")
         .onPort(7777)
         .addModel(Product.class)
         //Add an Elepy extension
@@ -42,6 +45,10 @@
         .start();
 
 }</code></pre>
+
+                <a class="uk-button uk-button-primary uk-margin-top" uk-scroll="offset: -750">Read more</a>
+
+</pre>
             </div>
         </div>
     </div>
