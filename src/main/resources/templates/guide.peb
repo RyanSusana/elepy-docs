@@ -13,6 +13,8 @@
           content='{%if guide.image is empty%}/images/logo-light.jpg{%else%}{{ guide.image }}{%endif%}'/>
     <meta property='og:title' content='{{ guide.title }}'/>
     <meta property='og:description' content='{{ guide.previewContent}}'/>
+
+    {% include 'templates/includes/gtag.peb' %}
 </head>
 <body>
 {% include 'templates/includes/navbar.peb' %}

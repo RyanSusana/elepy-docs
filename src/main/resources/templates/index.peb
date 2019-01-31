@@ -13,6 +13,9 @@
     <meta property='og:title' content='Elepy'/>
     <meta property='og:description'
           content='Elepy is a Rest API Generation Framework & Headless CMS for Java/Kotlin developed by Ryan Susana. The framework comes bundled with an admin control panel that lets you easily control your content.'/>
+
+    {% include 'templates/includes/gtag.peb' %}
+
 </head>
 <body>
 

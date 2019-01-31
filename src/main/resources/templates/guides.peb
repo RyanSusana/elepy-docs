@@ -9,6 +9,9 @@
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/prism.css">
+
+    {% include 'templates/includes/gtag.peb' %}
+
 </head>
 <body>
 {% include 'templates/includes/navbar.peb' %}
