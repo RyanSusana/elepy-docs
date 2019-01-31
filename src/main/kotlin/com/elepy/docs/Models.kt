@@ -3,7 +3,6 @@ package com.elepy.docs
 import com.elepy.annotations.*
 import com.elepy.annotations.Number
 import com.elepy.docs.routes.GuidesRoutes
-import com.elepy.docs.routes.MainRoutes
 import com.elepy.docs.services.SectionCreate
 import com.elepy.docs.services.SectionEvaluator
 import com.elepy.docs.services.SectionUpdate
@@ -18,13 +17,12 @@ import java.util.*
 //Sections
 @RestModel(name = "Sections", slug = "/sections", defaultSortField = "order")
 @Evaluators(value = [SectionEvaluator::class])
-@ExtraRoutes(MainRoutes::class)
 @Update(handler = SectionUpdate::class)
 @Create(handler = SectionCreate::class)
 data class Section @JsonCreator constructor(
-        @JsonProperty("id") @PrettyName("Section ID") @Identifier val id: String?,
+        @JsonProperty("id") @Importance(-20) @PrettyName("Section ID") @Identifier val id: String?,
         @JsonProperty("title") @PrettyName("Title") val title: String?,
-        @JsonProperty("cssClasses") @PrettyName("Extra CSS Classes") val cssClasses: String?,
+        @JsonProperty("cssClasses") @Importance(-20) @PrettyName("Extra CSS Classes") val cssClasses: String?,
         @JsonProperty("content") @PrettyName("Section Content") @Required @Importance(-1) @Text(TextType.MARKDOWN) val content: String,
         @JsonProperty("cssId") @PrettyName("CSS ID") @Required @Uneditable @Unique @Text(TextType.TEXTFIELD) val cssId: String,
         @JsonProperty("order") @PrettyName("Order Nr.") @Number(minimum = 0f, maximum = 200f) val order: Int?,
@@ -35,12 +33,24 @@ data class Section @JsonCreator constructor(
 
 enum class SectionType(val css: String) {
     @JsonEnumDefaultValue
+    @PrettyName("Java")
     JAVA("language-java"),
-    KOTLIN("language-kotlin"), XML("language-xml");
+
+    @PrettyName("Kotlin")
+    KOTLIN("language-kotlin"),
+
+    XML("language-xml");
 }
 
 enum class SectionVisibility(val showOnSite: Boolean, val showOnGitHub: Boolean) {
-    SHOW_EVERYWHERE(true, true), SHOW_ON_GITHUB(false, true), @JsonEnumDefaultValue
+    @PrettyName("Show Everywhere")
+    SHOW_EVERYWHERE(true, true),
+
+    @PrettyName("Show only on GitHub")
+    SHOW_ON_GITHUB(false, true),
+
+    @PrettyName("Show only on Elepy.com")
+    @JsonEnumDefaultValue
     SHOW_ON_SITE(true, false)
 }
 
@@ -54,7 +64,7 @@ class EasyIdentityProvider : SlugIdentityProvider<Any>(0, 70, "title", "name")
 data class Guide @JsonCreator constructor(
         @JsonProperty("id") @PrettyName("Section ID") @Identifier val id: String?,
         @JsonProperty("title") @PrettyName("Title") val title: String?,
-        @JsonProperty("caption") @PrettyName("Caption Image") @Text(TextType.IMAGE_LINK)  @Importance(-2) val image: String?,
+        @JsonProperty("caption") @PrettyName("Caption Image") @Text(TextType.IMAGE_LINK) @Importance(-2) val image: String?,
         @JsonProperty("previewContent") @PrettyName("Guide Introduction") @Required @Importance(0) @Text(TextType.TEXTAREA, maximumLength = 300) val previewContent: String,
         @JsonProperty("content") @PrettyName("Guide Content") @Required @Importance(-3) @Text(TextType.MARKDOWN) val content: String,
         @JsonProperty("order") @PrettyName("Order Nr.") @Number(minimum = 0f, maximum = 200f) val order: Int?,
