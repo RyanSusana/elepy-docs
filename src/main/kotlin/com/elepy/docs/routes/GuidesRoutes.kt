@@ -34,14 +34,13 @@ class GuidesRoutes {
     }
 
     @Route(path = "/guides/:id", requestMethod = HttpMethod.get)
-    fun guidePage(request: Request, response: Response): String {
+    fun guidePage(request: Request, response: Response) {
         val guide = guideDao.getById(request.params("id"))
 
         return if (guide.isPresent && guide.get().showOnSite) {
-            templateCompiler.compile("templates/guide.peb", mapOf("guide" to guide.get()))
+            response.body(templateCompiler.compile("templates/guide.peb", mapOf("guide" to guide.get())))
         } else {
             response.redirect("/")
-            ""
         }
     }
 
