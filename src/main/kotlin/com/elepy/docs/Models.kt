@@ -54,13 +54,10 @@ enum class SectionVisibility(val showOnSite: Boolean, val showOnGitHub: Boolean)
     SHOW_ON_SITE(true, false)
 }
 
-//SEO friendly slugs
-class EasyIdentityProvider : SlugIdentityProvider<Any>(0, 70, "title", "name")
-
 //Guides
 @RestModel(name = "Guides", slug = "/api/guides", defaultSortField = "order")
 @ExtraRoutes(GuidesRoutes::class)
-@IdProvider(EasyIdentityProvider::class)
+@IdProvider(SlugIdentityProvider::class)
 data class Guide @JsonCreator constructor(
         @JsonProperty("id") @PrettyName("Section ID") @Identifier val id: String?,
         @JsonProperty("title") @PrettyName("Title") val title: String?,
@@ -73,7 +70,7 @@ data class Guide @JsonCreator constructor(
 
 //News
 @RestModel(name = "News", slug = "/api/news", defaultSortField = "date")
-@IdProvider(EasyIdentityProvider::class)
+@IdProvider(SlugIdentityProvider::class)
 data class News @JsonCreator constructor(
         @JsonProperty("id") @PrettyName("Section ID") @Identifier val id: String?,
         @JsonProperty("title") @PrettyName("Title") val title: String?,
