@@ -5,14 +5,25 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Elepy</title>
+
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/prism.css">
+
+
     <meta property='og:image'
           content='{%if guide.image is empty%}/images/logo-light.jpg{%else%}{{ guide.image }}{%endif%}'/>
-    <meta property='og:title' content='{{ guide.title }}'/>
+    <meta property='og:title' content='Elepy - {{ guide.title }}'/>
     <meta property='og:description' content='{{ guide.previewContent}}'/>
+
+    <title>Elepy - {{ guide.title }}</title>
+    <meta name="keywords" content="Content Management System, Restful API, Rest API, Elepy, CMS">
+    <meta name="author" content="Ryan Susana">
+    <meta property='og:title' content='Elepy - {{ guide.title }}'/>
+    <meta property='og:description'
+          content='{{ guide.previewContent}}'/>
+    <meta name="description"
+          content="{{ guide.previewContent}}">
 
     {% include 'templates/includes/gtag.peb' %}
 </head>

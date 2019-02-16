@@ -5,14 +5,21 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Elepy</title>
+
+
     <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/prism.css">
+
+    <title>Elepy - Headless Content Management System and API Generator</title>
+    <meta name="keywords" content="Content Management System, Restful API, Rest API, Elepy, CMS">
+    <meta name="author" content="Ryan Susana">
     <meta property='og:image' content='https://elepy.com/images/logo-light.jpg'/>
-    <meta property='og:title' content='Elepy'/>
+    <meta property='og:title' content='Elepy - Headless Content Management System and API Generator'/>
     <meta property='og:description'
           content='Elepy is a Rest API Generation Framework & Headless CMS for Java/Kotlin developed by Ryan Susana. The framework comes bundled with an admin control panel that lets you easily control your content.'/>
+    <meta name="description"
+          content="Elepy is a Rest API Generation Framework & Headless CMS for Java/Kotlin developed by Ryan Susana. The framework comes bundled with an admin control panel that lets you easily control your content.">
 
     {% include 'templates/includes/gtag.peb' %}
 
@@ -51,7 +58,7 @@
 
                 <a class="uk-button uk-button-primary uk-margin-top" uk-scroll="offset: -750">Read more</a>
 
-</pre>
+                </pre>
             </div>
         </div>
     </div>
