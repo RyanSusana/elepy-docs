@@ -24,15 +24,13 @@ fun main(args: Array<String>) {
 
     val elepy = Elepy()
             .onPort(4242)
-            .addExtension(ElepyAdminPanel().addPlugin(ElepyGallery()))
+            .addExtension(ElepyAdminPanel().attachSrcDirectory(TemplateCompiler::class.java.classLoader, "public").addPlugin(ElepyGallery()))
             .connectDB(elepyDB)
             .registerDependency(TemplateCompiler::class.java)
             .addRouting(MainRoutes::class.java)
             .addModels(Section::class.java, Guide::class.java, News::class.java)
 
 
-    //SparkJava stuff
-    elepy.http().staticFiles.location("/public")
 
     elepy.start()
 

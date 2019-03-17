@@ -7,9 +7,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
 
-    <link rel="shortcut icon" href="/favicon.png" type="image/x-icon">
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/prism.css">
+    <link rel="shortcut icon" href="/public/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/public/css/main.css">
+    <link rel="stylesheet" href="/public/css/prism.css">
 
     <title>Elepy - Headless Content Management System and API Generator</title>
     <meta name="keywords" content="Content Management System, Restful API, Rest API, Elepy, CMS">
