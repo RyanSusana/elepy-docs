@@ -1,11 +1,12 @@
 package com.elepy.docs
 
+import com.elepy.admin.annotations.View
 import com.elepy.annotations.*
 import com.elepy.annotations.Number
+import com.elepy.dao.SortOption
 import com.elepy.docs.routes.GuidesRoutes
-import com.elepy.docs.services.SectionCreate
-import com.elepy.docs.services.SectionEvaluator
-import com.elepy.docs.services.SectionUpdate
+import com.elepy.docs.services.*
+import com.elepy.docs.views.MarkdownPageView
 import com.elepy.id.SlugIdentityProvider
 import com.elepy.models.TextType
 import com.fasterxml.jackson.annotation.JsonCreator
@@ -28,7 +29,7 @@ data class Section @JsonCreator constructor(
         @JsonProperty("order") @PrettyName("Order Nr.") @Number(minimum = 0f, maximum = 200f) val order: Int?,
         @JsonProperty("language") @Required @PrettyName("Programming Language") val language: SectionType,
         @JsonProperty("visibility") @Required @PrettyName("Section Visibility") val visibility: SectionVisibility,
-        @com.elepy.annotations.Boolean(trueValue = "Show link in Navigation Bar", falseValue = "Don't show link in Navigation Bar") @JsonProperty("showOnSite") @PrettyName("Show Link") val showLink: Boolean
+        @TrueFalse(trueValue = "Show link in Navigation Bar", falseValue = "Don't show link in Navigation Bar") @JsonProperty("showOnSite") @PrettyName("Show Link") val showLink: Boolean
 )
 
 enum class SectionType(val css: String) {
@@ -65,7 +66,7 @@ data class Guide @JsonCreator constructor(
         @JsonProperty("previewContent") @PrettyName("Guide Introduction") @Required @Importance(0) @Text(TextType.TEXTAREA, maximumLength = 300) val previewContent: String,
         @JsonProperty("content") @PrettyName("Guide Content") @Required @Importance(-3) @Text(TextType.MARKDOWN) val content: String,
         @JsonProperty("order") @PrettyName("Order Nr.") @Number(minimum = 0f, maximum = 200f) val order: Int?,
-        @com.elepy.annotations.Boolean(trueValue = "Is live on site", falseValue = "Is not live on site") @JsonProperty("showOnSite") @PrettyName("Live") val showOnSite: Boolean
+        @TrueFalse(trueValue = "Is live on site", falseValue = "Is not live on site") @JsonProperty("showOnSite") @PrettyName("Live") val showOnSite: Boolean
 )
 
 //News
@@ -86,4 +87,24 @@ data class News @JsonCreator constructor(
     fun prettyDate(): String {
         return SimpleDateFormat("yyyy/MM/dd").format(date)
     }
+}
+
+@RestModel(name = "Pages", slug = "/api/pages", defaultSortField = "title", defaultSortDirection = SortOption.ASCENDING)
+@View(MarkdownPageView::class)
+@Find(findManyHandler = MarkdownPageFindMany::class)
+@Update(handler = MarkdownPageUpdate::class)
+@Create(handler = MarkdownPageCreate::class)
+@Delete(handler = MarkdownPageDelete::class)
+@ExtraRoutes(MarkdownPageRoutes::class)
+data class MarkdownPage @JsonCreator constructor(
+        @JsonProperty("id") val id: String?,
+        @JsonProperty("title") @Searchable @Unique val title: String,
+        @JsonProperty("slug") @Searchable @Unique val slug: String,
+        @JsonProperty("type") @Searchable val type: MarkdownPageType,
+        @JsonProperty("live") @TrueFalse(trueValue = "Live", falseValue = "Draft") val live: Boolean?,
+        @JsonProperty("content") var content: String?
+)
+
+enum class MarkdownPageType(val pageTypeName: String, val directory: String) {
+    DOCUMENTATION_PAGE("Documentation", "pages"), GUIDE("Guides", "guides"), NEWS("News", "news")
 }

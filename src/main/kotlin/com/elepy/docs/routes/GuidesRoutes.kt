@@ -19,7 +19,7 @@ class GuidesRoutes {
     lateinit var guideDao: Crud<Guide>
 
 
-    @Route(path = "/guides", requestMethod = HttpMethod.GET)
+    @Route(path = "//guides", requestMethod = HttpMethod.GET)
     fun guidesPage(request: Request, response: Response): String {
         return templateCompiler
                 .compile("templates/guides.peb",

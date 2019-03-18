@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="/public/css/main.css">
     <link rel="stylesheet" href="/public/css/prism.css">
 
-    <title>Elepy - Headless Content Management System and API Generator</title>
-    <meta name="keywords" content="Content Management System, Restful API, Rest API, Elepy, CMS">
+    <title>Elepy - The Headless Content Management Framework</title>
+    <meta name="keywords" content="Content Management System, Restful API, Rest API, Elepy, CMS, Headless">
     <meta name="author" content="Ryan Susana">
     <meta property='og:image' content='https://elepy.com/images/logo-light.jpg'/>
     <meta property='og:title' content='Elepy - Headless Content Management System and API Generator'/>
@@ -35,7 +35,7 @@
                  class=""
                  style="height: 50px">
             <h3>Headless CMS &amp; API Generator</h3>
-            <p>Elepy is a Rest API Generation Framework/Headless CMS for Java developed by
+            <p>Elepy is a Headless CMS <strong>Framework</strong> for Java developed by
                 <a href="https://ryansusana.com">Ryan Susana</a>. The framework comes bundled with an admin control
                 panel that
                 lets you easily control your content. </p>

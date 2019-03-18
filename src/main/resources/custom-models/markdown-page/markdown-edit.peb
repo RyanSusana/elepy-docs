@@ -1,0 +1,164 @@
+<div id="markdown-app" class="uk-height-1-1">
+
+    <div class="uk-flex page-height">
+
+        <div class="uk-width-3-4">
+
+
+            <div class="button-bar uk-width-1-1 uk-background-secondary uk-padding-small">
+
+                <button v-if="currentPage != null" :disabled = "syncing" class="uk-button uk-button-primary" v-on:click = "syncPage(currentPage)">Sync with GitHub</button>
+                <button v-if="currentPage != null" v-bind:disabled="noChanges" class="uk-button uk-button-primary"
+                        @click="editPageSave">Save Page
+                </button>
+                <button class="uk-button uk-button-muted" @click="newPageOpen">New Page</button>
+
+
+                <button v-if="currentPage != null" class="uk-button uk-button-danger" @click="deletePage">Delete Page
+                </button>
+
+
+            </div>
+            <div class="button-bar uk-width-1-1 uk-flex uk-flex-center uk-flex-middle uk-background-muted uk-padding-small">
+
+                <form v-if="currentPage != null" class="uk-flex uk-width-2-3">
+                    <div class="uk-width-1-2 uk-flex uk-flex-middle">
+
+                        <input class="uk-checkbox uk-margin-small-right" v-model="currentPage.live"
+                               type="checkbox"
+                               placeholder="50">
+                        <label v-if="currentPage.live === true" class="uk-form-label">Published</label>
+                        <label v-else class="uk-form-label">Not Published</label>
+                    </div>
+                    <div class="uk-width-1-2 uk-flex uk-flex-middle">
+                        <label class="uk-form-label">Title:</label>
+                        <input class="uk-input uk-margin-small-left" v-model="currentPage.title" type="text"
+                               placeholder="50">
+                    </div>
+                    <div class="uk-width-1-2 uk-flex uk-flex-middle uk-margin-small-left">
+                        <label class="uk-form-label">Slug:</label>
+                        <input class="uk-input uk-margin-small-left" v-model="currentPage.slug" type="text"
+                               placeholder="50">
+                    </div>
+                </form>
+
+            </div>
+
+            <div id="editor" v-if="currentPage != null" class="uk-flex uk-flex-column uk-position-relative">
+                <div class="uk-position-absolute uk-padding-large uk-height-1-1 uk-width-1-1">
+                    <div id="view-icon" @click="focus = false"><i class="fas fa-eye"></i>View Rendered Page</div>
+                    <textarea v-model="currentPage.content" @input="update" id="input"
+                              class="uk-textarea uk-input uk-width-1-1 uk-height-1-1"></textarea>
+                </div>
+                <div id="viewer" v-if="currentPage != null" v-show="!focus"
+                     class="uk-padding-large uk-position-absolute uk-height-1-1 uk-width-1-1">
+                    <div id="edit-icon" @click="focus = true"><i class="fas fa-eye-slash"></i>Edit Markdown</div>
+                    <div v-html="compiledMarkdown" class="compiledMarkdown"></div>
+                </div>
+            </div>
+
+        </div>
+        <div class="page-selection uk-width-1-4 uk-background-muted uk-padding uk-height-1-1">
+
+            <h1 class="uk-heading-bullet">Pages</h1>
+            <p>These are the pages.</p>
+
+            <div v-for="type in pageTypes">
+                <h3 class="uk-heading-bullet">((type.name))</h3>
+                <div class="uk-margin-small-left">
+                    <ul class="uk-list">
+                        <li v-for="page in pages" v-if="type.value === page.type" class="uk-link"
+                            v-on:click="selectPage(page)">((page.title))
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="new-page-modal" uk-modal>
+        <div class="uk-modal-dialog">
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">Create New Page</h2>
+            </div>
+            <div class="uk-modal-body">
+                <form>
+                    <fieldset class="uk-fieldset">
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Page Title</label>
+                            <input class="uk-input" v-model="newPage.title" type="text">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Page Slug (eg. /main-page)</label>
+                            <input class="uk-input" v-model="newPage.slug" type="text">
+                        </div>
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Page Type</label>
+                            <select required name="" id="" class="uk-select" v-model="newPage.type">
+                                <option v-for="type in pageTypes" :value="type.value">((type.name))</option>
+                            </select>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="uk-modal-footer uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancel</button>
+                <button class="uk-button uk-button-primary" @click="newPageSave" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<style>
+
+    #edit-icon, #view-icon {
+        position: absolute;
+        top: 1em;
+        left: 2em;
+        cursor: pointer;
+        font-size: 1.2em !important;
+        color: rgba(0, 0, 0, 0.4);
+        transition: .2s all;
+    }
+
+    #edit-icon:hover, #view-icon:hover {
+        color: rgba(0, 0, 0, 1);
+    }
+
+    .button-bar {
+        height: 80px;
+        text-align: right;
+        box-sizing: border-box;
+    }
+
+    .page-height {
+        height: 100vh;
+        overflow-y: scroll;
+    }
+
+    #editor, #viewer {
+        top: 0;
+        left: 0;
+
+        overflow-y: scroll;
+    }
+
+    #editor {
+        height: calc(100% - 160px);
+    }
+
+    #viewer {
+        width: 100%;
+        height: 100%;
+        background: white;
+        box-sizing: border-box;
+    }
+</style>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<script src="https://unpkg.com/marked@0.3.6"></script>
+<script src="/public/js/markdown-page.js"></script>
