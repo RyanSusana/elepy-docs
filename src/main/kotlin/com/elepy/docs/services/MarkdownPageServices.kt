@@ -35,7 +35,7 @@ class MarkdownPageFindMany : MappedFindMany<MarkdownPage, MarkdownPage>() {
 class MarkdownPageCreate : SimpleCreate<MarkdownPage>() {
     override fun afterCreate(updatedVersion: MarkdownPage, crud: Crud<MarkdownPage>) {
         thread {
-            updateGithub(updatedVersion.type.directory, "${updatedVersion.title}.md", updatedVersion.content!!, updatedVersion.live!!)
+            updateGithub(updatedVersion.type.directory, "${updatedVersion.title}", updatedVersion.content!!, updatedVersion.live!!)
         }
     }
 
@@ -50,9 +50,9 @@ class MarkdownPageUpdate : SimpleUpdate<MarkdownPage>() {
         if (beforeVersion.content != updatedVersion.content || beforeVersion.title != updatedVersion.title || beforeVersion.live != updatedVersion.live) {
             thread {
                 if (beforeVersion.title != updatedVersion.title || beforeVersion.type != updatedVersion.type) {
-                    updateGithub(beforeVersion.type.directory, "${beforeVersion.title}.md", "", false)
+                    updateGithub(beforeVersion.type.directory, "${beforeVersion.title}", "", false)
                 }
-                updateGithub(updatedVersion.type.directory, "${updatedVersion.title}.md", updatedVersion.content!!, updatedVersion.live!!)
+                updateGithub(updatedVersion.type.directory, "${updatedVersion.title}", updatedVersion.content!!, updatedVersion.live!!)
             }
         }
     }
@@ -64,7 +64,7 @@ class MarkdownPageUpdate : SimpleUpdate<MarkdownPage>() {
 class MarkdownPageDelete : SimpleDelete<MarkdownPage>() {
     override fun afterDelete(itemToDelete: MarkdownPage, dao: Crud<MarkdownPage>?) {
         thread {
-            updateGithub(itemToDelete.type.directory, "${itemToDelete.title}.md", "", false)
+            updateGithub(itemToDelete.type.directory, "${itemToDelete.title}", "", false)
         }
     }
 
@@ -92,7 +92,7 @@ class MarkdownPageRoutes {
     fun syncPageWithGithub(request: Request, response: Response) {
 
         val page = crud.getById(request.params("id")).orElseThrow { ElepyException("No page found with this ID.", 404) }
-        val githubContent = getContent(page.type.directory, page.title + ".md")
+        val githubContent = getContent(page.type.directory, page.title + "")
 
         if (githubContent != null) {
             val pageContentLen = page.content!!.length
@@ -108,7 +108,7 @@ class MarkdownPageRoutes {
             throw ElepyException("Successfully synced with GitHub", 200)
         } else {
             println("None")
-            throw ElepyException("No GitHub page found titled: ${page.title}.md", 404)
+            throw ElepyException("No GitHub page found titled: ${page.title}", 404)
         }
 
 

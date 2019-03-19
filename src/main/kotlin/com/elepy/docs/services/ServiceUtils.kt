@@ -2,7 +2,12 @@ package com.elepy.docs.services
 
 import org.kohsuke.github.GHContent
 import org.kohsuke.github.GHFileNotFoundException
+import org.kohsuke.github.GHRepository
 import org.kohsuke.github.GitHub
+
+fun GitHub.elepy(): GHRepository {
+    return this.getRepository(if (System.getenv("testing") == null) "RyanSusana/elepy-wiki" else "RyanSusana/elepy-wiki")
+}
 
 fun getContent(directory: String, name: String): String? {
 
@@ -10,13 +15,15 @@ fun getContent(directory: String, name: String): String? {
 
         val gitHub: GitHub = GitHub.connectUsingPassword(System.getenv("GITHUB_USERNAME"), System.getenv("GITHUB_PASSWORD"))
 
-        val fileContent = gitHub.elepy().getFileContent("$directory/$name")
+
+        val fileContent = gitHub.elepy().getFileContent("$directory/${name.gitHubSafeName()}")
 
         fileContent.content
-    }catch (e:GHFileNotFoundException){
+    } catch (e: GHFileNotFoundException) {
         null
     }
 }
+
 fun updateGithub(directory: String, name: String, content: String, showOnGithub: Boolean) {
 
     val gitHub: GitHub = GitHub.connectUsingPassword(System.getenv("GITHUB_USERNAME"), System.getenv("GITHUB_PASSWORD"))
@@ -31,9 +38,9 @@ fun updateGithub(directory: String, name: String, content: String, showOnGithub:
             try {
                 gitHub.elepy()
                         .createContent()
-                        .message("AUTOMATED DOCUMENTATION UPDATE: $name")
+                        .message("AUTOMATED DOCUMENTATION UPDATE: ${name.gitHubSafeName()}")
                         .content(content)
-                        .path("$directory/$name")
+                        .path("$directory/${name.gitHubSafeName()}")
                         .commit()
             } catch (e: Exception) {
                 //Bug with the Library. It does an update instead of a create.
@@ -51,15 +58,19 @@ fun updateGithub(directory: String, name: String, content: String, showOnGithub:
                     .ifPresent { foundContent ->
                         gitHub.elepy()
                                 .createContent()
-                                .message("AUTOMATED DOCUMENTATION UPDATE: $name")
-                                .content(content).path("$directory/$name")
+                                .message("AUTOMATED DOCUMENTATION UPDATE: ${name.gitHubSafeName()}")
+                                .content(content).path("$directory/${name.gitHubSafeName()}")
                                 .sha(foundContent.sha)
                                 .commit()
                     }
         }
     } else {
         if (directoryContent.stream().anyMatch { ghcontent -> ghcontent.name == name }) {
-            gitHub.elepy().getFileContent("$directory/$name").delete("REMOVED DOCUMENTATION: $name")
+            gitHub.elepy().getFileContent("$directory/${name.gitHubSafeName()}").delete("REMOVED DOCUMENTATION: ${name.gitHubSafeName()}")
         }
     }
+}
+
+fun String.gitHubSafeName(): String {
+    return this.replace(".", "-").replace(" ", "-").toUpperCase() + ".md"
 }

@@ -26,7 +26,7 @@ class SectionCreate : SimpleCreate<Section>() {
 
     override fun afterCreate(createdObject: Section, crud: Crud<Section>?) {
         thread {
-            updateGithub("home", "${createdObject.cssId}.md", createdObject.content, createdObject.visibility.showOnGitHub)
+            updateGithub("home", "${createdObject.cssId}", createdObject.content, createdObject.visibility.showOnGitHub)
         }
     }
 }
@@ -40,14 +40,12 @@ class SectionUpdate : SimpleUpdate<Section>() {
     override fun afterUpdate(beforeVersion: Section, updatedVersion: Section, crud: Crud<Section>?) {
 
         thread {
-            updateGithub("home", "${updatedVersion.cssId}.md", updatedVersion.content, updatedVersion.visibility.showOnGitHub)
+            updateGithub("home", "${updatedVersion.cssId}", updatedVersion.content, updatedVersion.visibility.showOnGitHub)
         }
     }
 }
 
-fun GitHub.elepy(): GHRepository {
-    return this.getRepository(if (System.getenv("testing") == null) "RyanSusana/elepy-wiki" else "RyanSusana/elepy-wiki")
-}
+
 
 
 
