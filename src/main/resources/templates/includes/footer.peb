@@ -1,3 +1,3 @@
-<div class="uk-background-secondary uk-flex-middle uk-flex-center uk-flex uk-light uk-padding" style="height: 50px">
+<div id = "footer" class="uk-background-primary uk-flex-middle uk-flex-center uk-flex uk-light uk-padding" style="height: 50px">
     <p style="margin-bottom: 0;">Elepy is a free and open source framework, released under the Apache 2 License.</p>
 </div>

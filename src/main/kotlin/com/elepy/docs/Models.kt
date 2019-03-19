@@ -106,5 +106,7 @@ data class MarkdownPage @JsonCreator constructor(
 )
 
 enum class MarkdownPageType(val pageTypeName: String, val directory: String) {
-    DOCUMENTATION_PAGE("Documentation", "documentation"), GUIDE("Guides", "guides"), NEWS("News", "news")
+    DOCUMENTATION_PAGE("Documentation", "documentation"),
+    @JsonEnumDefaultValue
+    GUIDE("Guides", "guides")
 }

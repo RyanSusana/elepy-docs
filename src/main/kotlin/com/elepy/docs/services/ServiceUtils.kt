@@ -1,5 +1,6 @@
 package com.elepy.docs.services
 
+import com.github.slugify.Slugify
 import org.kohsuke.github.GHContent
 import org.kohsuke.github.GHFileNotFoundException
 import org.kohsuke.github.GHRepository
@@ -72,6 +73,7 @@ fun updateGithub(directory: String, name: String, content: String, showOnGithub:
     }
 }
 
+val slugify = Slugify()
 fun String.gitHubSafeName(): String {
-    return this.replace(".", "-").replace(" ", "-").toUpperCase() + ".md"
+    return slugify.slugify(this).toUpperCase() + ".md";
 }

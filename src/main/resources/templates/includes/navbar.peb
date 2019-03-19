@@ -18,7 +18,7 @@
                 {% endif %}
                 {% endfor %}
 
-                    <li><a href="/guides">Guides</a></li>
+                    <li><a href="/docs">Documentation &amp; Guides</a></li>
                     <li><a href="https://github.com/RyanSusana/elepy" target="_blank">GitHub</a></li>
 
                 </ul>

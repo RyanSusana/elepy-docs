@@ -7,7 +7,9 @@
 
             <div class="button-bar uk-width-1-1 uk-background-secondary uk-padding-small">
 
-                <button v-if="currentPage != null" :disabled = "syncing" class="uk-button uk-button-primary" v-on:click = "syncPage(currentPage)">Sync with GitHub</button>
+                <button v-if="currentPage != null" :disabled="syncing" class="uk-button uk-button-primary"
+                        v-on:click="syncPage(currentPage)">Sync with GitHub
+                </button>
                 <button v-if="currentPage != null" v-bind:disabled="noChanges" class="uk-button uk-button-primary"
                         @click="editPageSave">Save Page
                 </button>
@@ -44,15 +46,20 @@
 
             </div>
 
+
+
             <div id="editor" v-if="currentPage != null" class="uk-flex uk-flex-column uk-position-relative">
+                <div id="icon-box">
+                    <div id="view-icon" v-if="currentPage != null" v-show="focus" @click="focus = false"><i class="fas fa-eye"></i>View Rendered Page</div>
+                    <div id="edit-icon" v-if="currentPage != null" v-show="!focus" @click="focus = true"><i class="fas fa-eye-slash"></i>Edit Markdown</div>
+                </div>
+
                 <div class="uk-position-absolute uk-padding-large uk-height-1-1 uk-width-1-1">
-                    <div id="view-icon" @click="focus = false"><i class="fas fa-eye"></i>View Rendered Page</div>
-                    <textarea v-model="currentPage.content" @input="update" id="input"
+                    <textarea id = "editor-area" v-model="currentPage.content" @input="update" id="input"
                               class="uk-textarea uk-input uk-width-1-1 uk-height-1-1"></textarea>
                 </div>
                 <div id="viewer" v-if="currentPage != null" v-show="!focus"
                      class="uk-padding-large uk-position-absolute uk-height-1-1 uk-width-1-1">
-                    <div id="edit-icon" @click="focus = true"><i class="fas fa-eye-slash"></i>Edit Markdown</div>
                     <div v-html="compiledMarkdown" class="compiledMarkdown"></div>
                 </div>
             </div>
@@ -113,10 +120,20 @@
 
 <style>
 
-    #edit-icon, #view-icon {
+    #editor-area{
+        line-height: 1.3em;
+    }
+
+    #icon-box {
+        z-index: 1;
+        width: 100%;
         position: absolute;
         top: 1em;
         left: 2em;
+    }
+
+    #edit-icon, #view-icon {
+
         cursor: pointer;
         font-size: 1.2em !important;
         color: rgba(0, 0, 0, 0.4);
@@ -141,7 +158,7 @@
     #editor, #viewer {
         top: 0;
         left: 0;
-
+        width: 100%;
         overflow-y: scroll;
     }
 

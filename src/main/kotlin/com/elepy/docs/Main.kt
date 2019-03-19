@@ -4,6 +4,7 @@ import com.elepy.Elepy
 import com.elepy.admin.ElepyAdminPanel
 import com.elepy.admin.models.User
 import com.elepy.admin.models.UserType
+import com.elepy.docs.routes.DocumentationRoutes
 import com.elepy.docs.routes.MainRoutes
 import com.elepy.plugins.gallery.ElepyGallery
 import com.github.fakemongo.Fongo
@@ -43,6 +44,7 @@ fun main(args: Array<String>) {
             .connectDB(elepyDB)
             .registerDependency(TemplateCompiler::class.java)
             .addRouting(MainRoutes::class.java)
+            .addRouting(DocumentationRoutes::class.java)
             .addModelPackage("com.elepy.docs")
 
 
@@ -50,8 +52,8 @@ fun main(args: Array<String>) {
 
     elepy.start()
 
-//    val markdownPage = MarkdownPage("id", "Title", "/slug", true, "## her")
-//    elepy.getCrudFor(MarkdownPage::class.java).create(markdownPage)
+    val markdownPage = MarkdownPage("id", "Title", "slug", MarkdownPageType.DOCUMENTATION_PAGE,true, "## her")
+    elepy.getCrudFor(MarkdownPage::class.java).create(markdownPage)
 
 }
 

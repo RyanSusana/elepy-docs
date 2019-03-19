@@ -1,6 +1,7 @@
 @import "uikit/variables-theme";
 @import "uikit/mixins-theme";
 
+$navbar-nav-item-height: 100px;
 .main-navbar {
   background: lighten($global-primary-background, 5%) !important;
 }
@@ -9,9 +10,22 @@
   min-height: 720px;
 
 }
+
+@mixin for-phone {
+  @media (max-width: $breakpoint-medium) {
+    @content;
+  }
+}
+
+
+[md] {
+  white-space: pre;
+}
+
 #editor {
   position: relative;
 }
+
 #editor-content {
   position: absolute;
   top: 1em;
@@ -25,12 +39,106 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.caption-image{
+
+.caption-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
-#main{
+
+#main {
   min-height: 80vh;
 }
+
+$sidebar-width: 350px;
+
+#documentation-sidebar {
+
+  position: fixed;
+  top: $navbar-nav-item-height;
+  left: 0;
+
+  width: $sidebar-width;
+  background: #fefefe;
+  border-right: dashed 1px #ddd;
+  padding: 40px;
+  box-sizing: border-box;
+
+  @include for-phone {
+    visibility: hidden;
+  }
+
+  .uk-nav-header {
+    font-size: 1.3em;
+  }
+
+  li {
+    position: relative;
+  }
+
+  .uk-active {
+
+    a:before {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: -20px;
+      width: 10px;
+      border-top: 2px solid $global-primary-background;
+    }
+  }
+}
+
+#documentation-page {
+  position: fixed;
+  min-height: 80vh;
+  top: $navbar-nav-item-height;
+  overflow-y: scroll;
+
+  left: $sidebar-width;
+  width: calc(100% - #{$sidebar-width});
+  @include for-phone {
+    width: 100%;
+    left: 0;
+  }
+
+  background: linear-gradient(
+                  rgba(255, 255, 255, 0.6),
+                  rgba(255, 255, 255, 0.6)
+  ), url(/admin-resources/images/section-background.svg) 50%, #FFFFFF;
+
+
+  .uk-container {
+    min-height: 90%;
+    margin-top: 10vh;
+    margin-bottom: 10vh;
+
+    padding: 20px;
+    border-left: solid 1px #ddd;
+
+    h1::before, h2::before {
+      content: "";
+      /* 1 */
+      display: inline-block;
+      /* 2 */
+      position: relative;
+      top: $heading-bullet-top;
+      vertical-align: middle;
+      /* 3 */
+      height: $heading-bullet-height;
+      margin-right: $heading-bullet-margin-right;
+      border-left: $heading-bullet-border-width solid $heading-bullet-border;
+      @if (mixin-exists(hook-heading-bullet)) {
+        @include hook-heading-bullet();
+      }
+    }
+
+  }
+}
+
+#documentation-sidebar, #documentation-page {
+  height: calc(100% - #{$navbar-nav-item-height});
+}
+
+
 @import "uikit/uikit-theme";

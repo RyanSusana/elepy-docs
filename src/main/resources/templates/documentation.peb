@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="shortcut icon" href="/public/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="/public/css/main.css">
+    <link rel="stylesheet" href="/public/css/prism.css">
+
+    <title>Elepy - {{ currentPage.title }}</title>
+    <meta name="keywords" content="Content Management System, Restful API, Rest API, Elepy, CMS">
+    <meta name="author" content="Ryan Susana">
+    <meta property='og:image' content='https://elepy.com/images/logo-light.jpg'/>
+    <meta property='og:title' content='Elepy - {{ currentPage.title }}'/>
+    <meta property='og:description'
+          content='Elepy is a Headless CMS Framework for Java & Kotlin developed by Ryan Susana. The framework comes bundled with an admin control panel that lets you easily control your content.'/>
+    <meta name="description"
+          content="Elepy is a Headless CMS Framework for Java & Kotlin developed by Ryan Susana. The framework comes bundled with an admin control panel that lets you easily control your content.">
+
+    {% include 'templates/includes/gtag.peb' %}
+
+</head>
+<body>
+{% include 'templates/includes/navbar2.peb' %}
+<div id="main">
+
+    <div id="documentation-sidebar" class="">
+    {% for type in types %}
+        <ul class="uk-nav uk-nav-default">
+            <li class="uk-nav-header">{{ type.name }}</li>
+            {% for page in allPages %}
+            {% if page.type == type.value %}
+                <li class=" {% if currentPage.id == page.id %}uk-active{% endif %}"><a
+                        href="/docs/{{  page.slug}}">{{ page.title }}</a></li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    {% endfor %}
+    </div>
+
+    <div id="documentation-page">
+
+        <div class="uk-container uk-container-small" md>{{ currentPage.content }}</div>
+
+        {% include 'templates/includes/footer.peb' %}
+    </div>
+</div>
+
+
+{% include 'templates/includes/scripts.peb' %}
+
+</body>
+</html>
