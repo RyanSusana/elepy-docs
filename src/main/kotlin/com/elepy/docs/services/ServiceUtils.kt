@@ -34,11 +34,12 @@ fun updateGithub(directory: String, name: String, content: String, showOnGithub:
         mutableListOf()
     }
     if (showOnGithub) {
-        if (directoryContent.stream().noneMatch { ghcontent -> ghcontent.name == name }) {
+        if (directoryContent.stream().noneMatch { ghcontent -> ghcontent.name == name.gitHubSafeName() }) {
             try {
+                println("")
                 gitHub.elepy()
                         .createContent()
-                        .message("AUTOMATED DOCUMENTATION UPDATE: ${name.gitHubSafeName()}")
+                        .message("created: ${name.gitHubSafeName()}")
                         .content(content)
                         .path("$directory/${name.gitHubSafeName()}")
                         .commit()
@@ -52,21 +53,21 @@ fun updateGithub(directory: String, name: String, content: String, showOnGithub:
                     .getDirectoryContent(directory)
                     .stream()
                     .filter { githubFile ->
-                        name == githubFile.name
+                        name.gitHubSafeName() == githubFile.name
                     }
                     .findAny()
                     .ifPresent { foundContent ->
                         gitHub.elepy()
                                 .createContent()
-                                .message("AUTOMATED DOCUMENTATION UPDATE: ${name.gitHubSafeName()}")
+                                .message("updated: ${name.gitHubSafeName()}")
                                 .content(content).path("$directory/${name.gitHubSafeName()}")
                                 .sha(foundContent.sha)
                                 .commit()
                     }
         }
     } else {
-        if (directoryContent.stream().anyMatch { ghcontent -> ghcontent.name == name }) {
-            gitHub.elepy().getFileContent("$directory/${name.gitHubSafeName()}").delete("REMOVED DOCUMENTATION: ${name.gitHubSafeName()}")
+        if (directoryContent.stream().anyMatch { ghcontent -> ghcontent.name == name.gitHubSafeName() }) {
+            gitHub.elepy().getFileContent("$directory/${name.gitHubSafeName()}").delete("removed: ${name.gitHubSafeName()}")
         }
     }
 }
