@@ -3,3 +3,7 @@ https://elepy.com
 https://elepy.com/guides/{{ guide.id }}
 
 {%endfor%}
+{%for doc in docs%}
+https://elepy.com/docs/{{ doc.slug }}
+
+{%endfor%}

@@ -52,8 +52,6 @@ fun main(args: Array<String>) {
 
     elepy.start()
 
-    val markdownPage = MarkdownPage("id", "Title", "slug", MarkdownPageType.DOCUMENTATION_PAGE,true, "## her")
-    elepy.getCrudFor(MarkdownPage::class.java).create(markdownPage)
 
 }
 

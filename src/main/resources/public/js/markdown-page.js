@@ -42,7 +42,7 @@ const app = new Vue({
                     selfReference.pageTypes = response.data
                 })
                 .catch(function (error) {
-                    UIkit.notification(error.response.data, {status: 'danger'})
+                    UIkit.notification(error.response.data, {pos: 'bottom-center', status: 'danger'})
 
                 });
         },
@@ -50,7 +50,7 @@ const app = new Vue({
             this.input = e.target.value
         }, 300),
 
-        getPages: function () {
+        getPages: function (slug) {
 
             let selfReference = this;
             axios({
@@ -60,13 +60,16 @@ const app = new Vue({
                 .then(function (response) {
                     selfReference.pages = response.data.values;
 
+                    if(slug !== undefined){
+                        selfReference.selectBySlug(slug)
+                    }
                     if (selfReference.currentPage != null) {
                         selfReference.selectById(selfReference.currentPage.id)
                     }
                 })
                 .catch(function (error) {
 
-                    UIkit.notification(error.response.data.message, {status: 'danger'})
+                    UIkit.notification(error.response.data.message, {pos: 'bottom-center', status: 'danger'})
 
                 });
 
@@ -81,19 +84,23 @@ const app = new Vue({
             })
                 .then(function (response) {
 
-                    UIkit.notification(response.data.message, {status: 'success'})
+                    UIkit.notification(response.data.message, {pos: 'bottom-center', status: 'success'})
                     selfReference.syncing = false;
                     selfReference.getPages()
                 })
                 .catch(function (error) {
 
                     selfReference.syncing = false;
-                    UIkit.notification(error.response.data, {status: 'danger'})
+                    UIkit.notification(error.response.data, {pos: 'bottom-center', status: 'danger'})
 
                 });
         },
         selectById: function (id) {
             this.selectPage(this.pages.find(x => x.id === id));
+        },
+
+        selectBySlug: function (id) {
+            this.selectPage(this.pages.find(x => x.slug === id));
         },
         selectPage: function (page) {
             this.currentPage = JSON.parse(JSON.stringify(page));
@@ -121,13 +128,19 @@ const app = new Vue({
             })
                 .then(function (response) {
 
-                    UIkit.notification("Successfully created the page, click on '" + selfReference.newPage.title + "' in the menu to edit it. ", {status: 'success'})
-                    selfReference.getPages()
+                    UIkit.notification("Successfully created the page, when you're finished editing, don't forget to publish! ", {
+                        pos: 'bottom-center',
+                        status: 'success'
+                    });
+
+                    let slug = "" + selfReference.newPage.slug;
+                    selfReference.getPages(slug)
                     UIkit.modal(document.getElementById("new-page-modal")).hide();
+
                 })
                 .catch(function (error) {
                     console.log(error);
-                    UIkit.notification(error.response.data, {status: 'danger'})
+                    UIkit.notification(error.response.data, {pos: 'bottom-center', status: 'danger'})
 
                 });
         },
@@ -141,10 +154,10 @@ const app = new Vue({
                 .then(function (response) {
                     selfReference.getPages();
                     UIkit.notification.closeAll();
-                    UIkit.notification("Successfully updated the page!", {status: 'success'})
+                    UIkit.notification("Successfully updated the page!", {pos: 'bottom-center', status: 'success'})
                 })
                 .catch(function (error) {
-                    UIkit.notification(error.response.data, {status: 'danger'})
+                    UIkit.notification(error.response.data, {pos: 'bottom-center', status: 'danger'})
 
                 });
         },
@@ -160,12 +173,12 @@ const app = new Vue({
                     method: 'delete',
                     url: '/api/pages/' + ref.currentPage.id
                 }).then(function (response) {
-                    UIkit.notification('Successfully deleted the page', {status: 'success'});
+                    UIkit.notification('Successfully deleted the page', {pos: 'bottom-center', status: 'success'});
                     ref.currentPage = null;
                     ref.getPages()
                 })
                     .catch(function (error) {
-                        UIkit.notification(error.response.data.message, {status: 'danger'})
+                        UIkit.notification(error.response.data.message, {pos: 'bottom-center', status: 'danger'})
                     });
             }, function () {
 

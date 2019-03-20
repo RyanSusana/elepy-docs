@@ -5,13 +5,11 @@ import com.elepy.annotations.Route
 import com.elepy.dao.Crud
 import com.elepy.docs.Guide
 import com.elepy.docs.MarkdownPage
-import com.elepy.docs.MarkdownPageType
 import com.elepy.docs.TemplateCompiler
 import com.elepy.http.AccessLevel
 import com.elepy.http.HttpMethod
 import com.elepy.http.Request
 import com.elepy.http.Response
-import java.util.stream.Collectors
 
 class MainRoutes {
     @Inject
@@ -19,7 +17,8 @@ class MainRoutes {
 
     @Inject
     lateinit var guideDao: Crud<Guide>
-
+    @Inject
+    lateinit var documentationCrud: Crud<MarkdownPage>
 
 
     @Route(requestMethod = HttpMethod.GET, path = "/")
@@ -33,12 +32,8 @@ class MainRoutes {
         response.type("text/plain")
         return templateCompiler
                 .compile("templates/sitemap.peb",
-                        mapOf("guides" to
-                                guideDao
-                                        .all
-                                        .stream()
-                                        .filter { guide -> guide.showOnSite }
-                                        .collect(Collectors.toList())
+                        mapOf("guides" to guideDao.all.filter { guide -> guide.showOnSite },
+                                "docs" to documentationCrud.all.filter { it.live!! }
                         )
                 )
     }

@@ -27,8 +27,7 @@ class DocumentationRoutes {
 
     val intro = MarkdownPage("", "Introduction", "", MarkdownPageType.DOCUMENTATION_PAGE, true, introContent)
     val notFound = MarkdownPage("", "404 Not Found", "", MarkdownPageType.DOCUMENTATION_PAGE, true, notFoundContent)
-    @Inject
-    lateinit var documentationCrud: Crud<MarkdownPage>
+
 
 
     @Inject
@@ -71,7 +70,7 @@ class DocumentationRoutes {
             mapOf("name" to type.pageTypeName, "value" to type.name)
         }
 
-        var page = pageDao.searchInField("slug", request.params("intro")).firstOrNull()
+        var page = pageDao.searchInField("slug", "intro").firstOrNull()
                 ?: intro
 
         if (!page.live!!) {
